@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  labels:
+    app: mariadb
+  namespace: testlink
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mariadb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+      - image: bitnami/mariadb:latest
+        name: mariadb
+        env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        - name: MARIADB_USER
+          value: "bn_testlink"
+        - name: MARIADB_DATABASE
+          value: "bitnami_testlink"
+        - name: MARIADB_PASSWORD
+          value: "bitnami"
+        volumeMounts:
+        - name: mariadbdata
+          mountPath: /bitnami/mariadb
+      volumes:
+      - name: mariadbdata
+        emptyDir: {}

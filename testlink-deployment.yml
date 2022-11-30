@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testlink
+  labels:
+    app: teslink
+  namespace: testlink
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: testlink
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: testlink
+    spec:
+      containers:
+      - image: bitnami/testlink:1.9.16
+        name: testlink
+        env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        - name: TESTLINK_DATABASE_USER
+          value: "bn_testlink"
+        - name: TESTLINK_DATABASE_NAME
+          value: "bitnami_testlink"
+        - name: TESTLINK_DATABASE_PASSWORD
+          value: "bitnami"
+        ports:
+        - containerPort: 80
+          name: testlink
+        volumeMounts:
+        - name: testlinkdata
+          mountPath: /bitnami/testlink
+      volumes:
+      - name: testlinkdata
+        emptyDir: {}
